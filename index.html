@@ -865,11 +865,104 @@
         .nav-bar { height: 80px; background: white; border-top: 1px solid #eee; display: flex; padding-bottom: 10px; }
         .nav-item { flex: 1; border: none; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #BDBDBD; font-weight: bold; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
+
+        /* 名字输入遮罩层（增加语言切换按钮样式） */
+        #name-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        .name-box {
+            background: linear-gradient(145deg, #FFE4B5, #FFDAB9);
+            padding: 30px 25px;
+            border-radius: 60px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 4px #FFB347, 0 0 0 8px rgba(255,215,0,0.5);
+            width: 85%;
+            max-width: 320px;
+            border: 3px solid #8B4513;
+            position: relative;
+        }
+        .name-box h2 {
+            color: #8B4513;
+            font-size: 28px;
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .lang-switch-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #6D4C41;
+            color: #FFD966;
+            border: 2px solid #FFD966;
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.1s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .lang-switch-btn:active {
+            transform: scale(0.95);
+        }
+        .name-box input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 18px;
+            border-radius: 50px;
+            border: 3px solid #8B4513;
+            background: #FFFEF7;
+            text-align: center;
+            font-weight: bold;
+            color: #4a2c00;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .name-box button {
+            background: #C41E3A;
+            color: #FFD966;
+            border: none;
+            padding: 12px 25px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 40px;
+            width: 80%;
+            box-shadow: 0 5px 0 #8B0000;
+            cursor: pointer;
+            transition: 0.05s linear;
+        }
+        .name-box button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #8B0000;
+        }
     </style>
 </head>
 <body>
 
 <div id="app">
+    <!-- 名字输入遮罩（一开始显示） -->
+    <div id="name-overlay">
+        <div class="name-box">
+            <div class="lang-switch-btn" id="overlay-lang-btn">BM</div>
+            <h2>🐹 仓鼠学霸 <span>📖</span></h2>
+            <input type="text" id="player-name-input" placeholder="输入你的名字" maxlength="20" autocomplete="off">
+            <button id="confirm-name-btn">开始冒险 🚀</button>
+        </div>
+    </div>
+
     <!-- 背包面板 -->
     <div id="inv-panel" onclick="toggleInv(false)">
         <div class="inv-content" onclick="event.stopPropagation()">
@@ -2143,217 +2236,153 @@
         document.getElementById('quiz-screen').style.display = 'none';
     }
 
-    init();
-</script>
+    // 名字输入遮罩逻辑（必须放在所有代码后面，确保DOM已存在）
+    const overlay = document.getElementById('name-overlay');
+    const nameInput = document.getElementById('player-name-input');
+    const confirmBtn = document.getElementById('confirm-name-btn');
+    const overlayLangBtn = document.getElementById('overlay-lang-btn');
+    let gameStarted = false;
 
-<!-- ========== 新增记忆名字保存系统（不修改原有任何代码） ========== -->
-<script>
-(function() {
-    // 等待原有代码完全执行（原 init 已运行）
-    setTimeout(() => {
-        console.log("[存档系统] 已启动");
-
-        // ----- 1. 获取原有全局函数和 state -----
-        const originalState = window.state;
-        const originalBuy = window.buy;
-        const originalUseItem = window.useItem;
-        const originalAddXP = window.addXP;
-        const originalFinishQuizReward = window.finishQuizReward;
-        const originalUpdateUI = window.updateUI;
-        const originalMakeDraggable = window.makeDraggable;
-        const originalSetLanguage = window.setLanguage;
-        const originalRenderRoom = window.renderRoom;
-        const originalRenderInventory = window.renderInventory;
-        const originalToggleInv = window.toggleInv;
-
-        if (!originalState) {
-            console.error("未找到 window.state，存档系统失效");
-            return;
-        }
-
-        let currentPlayerName = localStorage.getItem('lastPlayerName') || '';
-
-        // ----- 2. 保存/加载核心函数 -----
-        function saveGame() {
-            if (!currentPlayerName) return;
-            const saveData = {
-                coins: originalState.coins,
-                full: originalState.full,
-                happy: originalState.happy,
-                lv: originalState.lv,
-                xp: originalState.xp,
-                inventory: originalState.inventory,
-                placedFurniture: originalState.placedFurniture,
-                currentToy: originalState.currentToy,
-                totalGoldEarned: originalState.totalGoldEarned,
-                hamsterImg: originalState.hamsterImg,
-                backgroundUrl: originalState.backgroundUrl,
-                currentLang: window.currentLang,
-                // 额外保存玩家名字
-                playerName: currentPlayerName
-            };
-            localStorage.setItem(`hamster_save_${currentPlayerName}`, JSON.stringify(saveData));
-            localStorage.setItem('lastPlayerName', currentPlayerName);
-            console.log(`[存档] 已保存玩家 “${currentPlayerName}” 的进度`);
-        }
-
-        function loadGame(playerName) {
-            const raw = localStorage.getItem(`hamster_save_${playerName}`);
-            if (!raw) {
-                // 新玩家，保留原有初始数据（不做任何改动）
-                console.log(`[存档] 玩家 “${playerName}” 无存档，将使用新游戏初始值`);
-                currentPlayerName = playerName;
-                saveGame(); // 立即保存初始值
-                return false;
-            }
-            try {
-                const data = JSON.parse(raw);
-                // 恢复所有状态
-                originalState.coins = data.coins ?? 100;
-                originalState.full = data.full ?? 80;
-                originalState.happy = data.happy ?? 80;
-                originalState.lv = data.lv ?? 1;
-                originalState.xp = data.xp ?? 0;
-                originalState.inventory = data.inventory ?? {};
-                originalState.placedFurniture = data.placedFurniture ?? [];
-                originalState.currentToy = data.currentToy ?? null;
-                originalState.totalGoldEarned = data.totalGoldEarned ?? 0;
-                originalState.hamsterImg = data.hamsterImg ?? "./hamster.png";
-                originalState.backgroundUrl = data.backgroundUrl ?? "";
-                if (data.currentLang) {
-                    // 调用原语言切换函数（它会自动刷新界面）
-                    originalSetLanguage(data.currentLang);
-                }
-                currentPlayerName = playerName;
-                // 强制刷新所有界面
-                originalUpdateUI();
-                if (originalRenderRoom) originalRenderRoom();
-                if (originalRenderInventory && document.getElementById('inv-panel').style.display === 'flex') originalRenderInventory();
-                console.log(`[存档] 已加载玩家 “${playerName}” 的进度`);
-                return true;
-            } catch(e) {
-                console.warn("加载存档失败", e);
-                return false;
-            }
-        }
-
-        // 切换玩家
-        window.switchPlayer = function(newName) {
-            if (!newName || newName.trim() === "") {
-                alert("名字不能为空");
-                return;
-            }
-            // 保存当前玩家
-            if (currentPlayerName) saveGame();
-            // 加载新玩家
-            loadGame(newName.trim());
-        };
-
-        // 显示切换玩家的UI（简易固定按钮）
-        function createSwitchButton() {
-            const btn = document.createElement('div');
-            btn.innerText = "👤 切换玩家";
-            btn.style.position = "fixed";
-            btn.style.bottom = "90px";
-            btn.style.right = "10px";
-            btn.style.background = "#6D4C41";
-            btn.style.color = "white";
-            btn.style.padding = "8px 12px";
-            btn.style.borderRadius = "30px";
-            btn.style.fontSize = "14px";
-            btn.style.fontWeight = "bold";
-            btn.style.zIndex = "9999";
-            btn.style.boxShadow = "0 2px 8px rgba(0,0,0,0.3)";
-            btn.style.cursor = "pointer";
-            btn.style.border = "2px solid #FFD966";
-            btn.onclick = () => {
-                let newName = prompt("输入你的名字（存档将以此名字保存）", currentPlayerName || "仓鼠主人");
-                if (newName && newName.trim() !== "") {
-                    window.switchPlayer(newName.trim());
-                }
-            };
-            document.body.appendChild(btn);
-        }
-
-        // ----- 3. 劫持所有会改变游戏状态的函数，实现自动保存 -----
-        // 注意：必须保留原函数的所有功能，仅在其后追加 saveGame()
-
-        // 3.1 购买
-        window.buy = function(icon, id, price, type, val, happyVal, xpGain) {
-            originalBuy(icon, id, price, type, val, happyVal, xpGain);
-            saveGame();
-        };
-
-        // 3.2 使用物品
-        window.useItem = function(id) {
-            originalUseItem(id);
-            saveGame();
-        };
-
-        // 3.3 增加经验（会触发升级加金币）
-        window.addXP = function(amount) {
-            originalAddXP(amount);
-            saveGame();
-        };
-
-        // 3.4 答题完成奖励
-        window.finishQuizReward = function() {
-            originalFinishQuizReward();
-            saveGame();
-        };
-
-        // 3.5 更新UI（自然衰减、喂食等都会调用它，捕获自动保存）
-        window.updateUI = function() {
-            originalUpdateUI();
-            saveGame();
-        };
-
-        // 3.6 拖拽家具（需要包装 makeDraggable，使每次移动结束时保存）
-        window.makeDraggable = function(el, onDragEnd) {
-            // 包装 onDragEnd
-            const wrappedOnDragEnd = (x, y) => {
-                if (onDragEnd) onDragEnd(x, y);
-                saveGame(); // 家具位置改变后保存
-            };
-            originalMakeDraggable(el, wrappedOnDragEnd);
-        };
-
-        // 3.7 语言切换（保存语言设置）
-        window.setLanguage = function(lang) {
-            originalSetLanguage(lang);
-            saveGame();
-        };
-
-        // 3.8 渲染房间（可能因收回/放置家具而调用，但已在 useItem 中保存，此处无需额外保存）
-        // 但为了安全，也可以劫持 renderRoom，但是它会频繁调用，不做额外保存
-
-        // 3.9 背包关闭时不需保存
-
-        // 3.10 额外劫持自然衰减的定时器无法直接修改，但 updateUI 已经劫持，每次衰减后都会 saveGame()
-
-        // ----- 4. 初始化加载上次玩家 -----
-        if (currentPlayerName) {
-            loadGame(currentPlayerName);
+    // 更新遮罩层的文字（根据当前语言）
+    function updateOverlayText() {
+        if (currentLang === 'zh') {
+            document.querySelector('#name-overlay h2').innerHTML = '🐹 仓鼠学霸 <span>📖</span>';
+            nameInput.placeholder = '输入你的名字';
+            confirmBtn.innerText = '开始冒险 🚀';
+            overlayLangBtn.innerText = 'BM';
         } else {
-            // 如果没有上次玩家，弹出首次输入框
-            let firstName = prompt("欢迎！请输入你的名字开始游戏（将自动保存进度）", "仓鼠主人");
-            if (firstName && firstName.trim() !== "") {
-                loadGame(firstName.trim());
-            } else {
-                loadGame("默认玩家");
-            }
+            document.querySelector('#name-overlay h2').innerHTML = '🐹 Hamster Bijak <span>📖</span>';
+            nameInput.placeholder = 'Masukkan nama anda';
+            confirmBtn.innerText = 'Mula 🚀';
+            overlayLangBtn.innerText = '中';
         }
+    }
 
-        // 创建切换玩家按钮
-        createSwitchButton();
+    // 遮罩层语言切换（不干扰游戏内语言切换函数，直接调用原函数）
+    function toggleOverlayLanguage() {
+        const newLang = currentLang === 'zh' ? 'ms' : 'zh';
+        setLanguage(newLang);  // 调用原有的 setLanguage，它会刷新游戏内所有文字，同时 currentLang 改变
+        updateOverlayText();   // 刷新遮罩层文字
+    }
+    overlayLangBtn.onclick = toggleOverlayLanguage;
 
-        // 确保商店、背包等界面刷新后也能正确显示已加载的库存（原renderShop已执行过，但loadGame中调用originalSetLanguage会重新渲染）
-        // 额外调用一次渲染商店（保证商品名称语言正确）
-        if (window.renderShop) window.renderShop();
+    // 加载/保存函数（简易存档）
+    function saveGameToLocal(playerName) {
+        const saveData = {
+            coins: state.coins,
+            full: state.full,
+            happy: state.happy,
+            lv: state.lv,
+            xp: state.xp,
+            inventory: state.inventory,
+            placedFurniture: state.placedFurniture,
+            currentToy: state.currentToy,
+            totalGoldEarned: state.totalGoldEarned,
+            hamsterImg: state.hamsterImg,
+            backgroundUrl: state.backgroundUrl,
+            currentLang: currentLang
+        };
+        localStorage.setItem(`hamster_save_${playerName}`, JSON.stringify(saveData));
+        localStorage.setItem('lastPlayerName', playerName);
+    }
 
-        console.log("[存档系统] 已就绪，当前玩家：" + currentPlayerName);
-    }, 100); // 延时100ms确保原代码所有全局变量已就绪
-})();
+    function loadGameFromLocal(playerName) {
+        const raw = localStorage.getItem(`hamster_save_${playerName}`);
+        if (!raw) return false;
+        try {
+            const data = JSON.parse(raw);
+            state.coins = data.coins ?? 100;
+            state.full = data.full ?? 80;
+            state.happy = data.happy ?? 80;
+            state.lv = data.lv ?? 1;
+            state.xp = data.xp ?? 0;
+            state.inventory = data.inventory ?? {};
+            state.placedFurniture = data.placedFurniture ?? [];
+            state.currentToy = data.currentToy ?? null;
+            state.totalGoldEarned = data.totalGoldEarned ?? 0;
+            state.hamsterImg = data.hamsterImg ?? "./hamster.png";
+            state.backgroundUrl = data.backgroundUrl ?? "";
+            if (data.currentLang) setLanguage(data.currentLang);
+            return true;
+        } catch(e) { return false; }
+    }
+
+    function startGameWithName(playerName) {
+        if (gameStarted) return;
+        gameStarted = true;
+        // 尝试加载存档
+        if (!loadGameFromLocal(playerName)) {
+            // 新玩家，使用默认值（state已经是默认值）
+            console.log(`新玩家 ${playerName}，创建新存档`);
+        }
+        // 刷新界面
+        updateUI();
+        renderRoom();
+        renderShop();
+        // 启动游戏循环
+        init();
+        // 移除遮罩
+        overlay.style.display = 'none';
+        // 拦截所有状态改变自动保存
+        const originalAddXP_ = addXP;
+        window.addXP = function(amount) {
+            originalAddXP_(amount);
+            saveGameToLocal(playerName);
+        };
+        const originalBuy_ = buy;
+        window.buy = function(icon, id, price, type, val, happyVal, xpGain) {
+            originalBuy_(icon, id, price, type, val, happyVal, xpGain);
+            saveGameToLocal(playerName);
+        };
+        const originalUseItem_ = useItem;
+        window.useItem = function(id) {
+            originalUseItem_(id);
+            saveGameToLocal(playerName);
+        };
+        const originalFinishQuizReward_ = finishQuizReward;
+        window.finishQuizReward = function() {
+            originalFinishQuizReward_();
+            saveGameToLocal(playerName);
+        };
+        const originalUpdateUI_ = updateUI;
+        window.updateUI = function() {
+            originalUpdateUI_();
+            saveGameToLocal(playerName);
+        };
+        const originalSetLanguage_ = setLanguage;
+        window.setLanguage = function(lang) {
+            originalSetLanguage_(lang);
+            saveGameToLocal(playerName);
+        };
+        // 拖拽家具保存已在 makeDraggable 中通过 onDragEnd 调用，无需额外劫持
+        // 保存一次初始状态
+        saveGameToLocal(playerName);
+    }
+
+    confirmBtn.onclick = () => {
+        let name = nameInput.value.trim();
+        if (name === "") {
+            name = "仓鼠主人";
+        }
+        startGameWithName(name);
+    };
+    nameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            let name = nameInput.value.trim();
+            if (name === "") name = "仓鼠主人";
+            startGameWithName(name);
+        }
+    });
+    // 检查是否已有上次玩家，如果有则直接加载（跳过输入界面）
+    const lastPlayer = localStorage.getItem('lastPlayerName');
+    if (lastPlayer) {
+        // 直接开始游戏，不需要输入
+        startGameWithName(lastPlayer);
+    } else {
+        // 显示输入框，等待玩家输入
+        overlay.style.display = 'flex';
+        updateOverlayText(); // 初始刷新一次文字（默认马来语）
+    }
 </script>
 </body>
 </html>
