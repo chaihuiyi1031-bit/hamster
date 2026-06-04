@@ -2245,6 +2245,12 @@
     const overlayLangBtn = document.getElementById('overlay-lang-btn');
     let gameStarted = false;
 
+    // 修复：将 toast 的 z-index 提高到遮罩层之上（21000）
+    const toastMsg = document.getElementById('toastMessage');
+    if (toastMsg) {
+        toastMsg.style.zIndex = '21000';
+    }
+
     // 更新遮罩层的文字（根据当前语言）
     function updateOverlayText() {
         if (currentLang === 'zh') {
@@ -2365,7 +2371,7 @@
     confirmBtn.onclick = () => {
         let name = nameInput.value.trim();
         if (name === "") {
-            // 显示跟随当前语言的提示
+            // 显示跟随当前语言的提示（现在 toast 的 z-index 已经高于遮罩层，所以可见）
             showToast(i18n[currentLang].name_empty_error, '⚠️', 2000);
             return;
         }
