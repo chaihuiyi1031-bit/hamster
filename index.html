@@ -1236,6 +1236,7 @@
             insufficient_coins: '金币不足，快去学习马来西亚的历史吧',
             bad_status_toast: '仓鼠状态不佳',
             hungry_msg: '😢 仓鼠饿了… 快去学习赚金币买马来美食吧！',
+            name_empty_error: '请输入名字后再开始！',
             items: {
                 nasi_lemak: '椰浆饭',
                 laksa: '叻沙',
@@ -1305,6 +1306,7 @@
             insufficient_coins: 'Emas tidak cukup, cepat belajar sejarah Malaysia',
             bad_status_toast: 'Keadaan hamster kurang baik',
             hungry_msg: '😢 Hamster lapar… Cepat belajar dan dapat emas untuk beli makanan!',
+            name_empty_error: 'Sila masukkan nama anda terlebih dahulu!',
             items: {
                 nasi_lemak: 'Nasi Lemak',
                 laksa: 'Laksa',
@@ -2251,7 +2253,7 @@
             confirmBtn.innerText = '开始冒险 🚀';
             overlayLangBtn.innerText = 'BM';
         } else {
-            document.querySelector('#name-overlay h2').innerHTML = '🐹 Hamster Pro <span>📖</span>';
+            document.querySelector('#name-overlay h2').innerHTML = '🐹 Hamster Bijak <span>📖</span>';
             nameInput.placeholder = 'Masukkan nama anda';
             confirmBtn.innerText = 'Mula 🚀';
             overlayLangBtn.innerText = '中';
@@ -2359,17 +2361,23 @@
         saveGameToLocal(playerName);
     }
 
+    // 处理开始按钮点击（加入空值提示）
     confirmBtn.onclick = () => {
         let name = nameInput.value.trim();
         if (name === "") {
-            name = "仓鼠主人";
+            // 显示跟随当前语言的提示
+            showToast(i18n[currentLang].name_empty_error, '⚠️', 2000);
+            return;
         }
         startGameWithName(name);
     };
     nameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             let name = nameInput.value.trim();
-            if (name === "") name = "仓鼠主人";
+            if (name === "") {
+                showToast(i18n[currentLang].name_empty_error, '⚠️', 2000);
+                return;
+            }
             startGameWithName(name);
         }
     });
