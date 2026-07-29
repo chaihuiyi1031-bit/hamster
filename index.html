@@ -644,86 +644,6 @@
             display: block;
         }
 
-        .record-card {
-            background: white;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            border-left: 4px solid #4CAF50;
-            transition: 0.1s;
-        }
-        .record-card:active {
-            background: #f5f5f5;
-        }
-        .record-card.emblem-record {
-            border-left-color: #1565C0;
-        }
-        .record-card .record-summary {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        .record-card .record-summary strong {
-            font-size: 15px;
-            color: #333;
-        }
-        .record-card .record-summary span {
-            font-size: 12px;
-            color: #888;
-        }
-        .record-detail {
-            display: none;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #ddd;
-            font-size: 12px;
-            color: #555;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .record-detail.open {
-            display: block;
-        }
-        .record-detail .detail-row {
-            padding: 4px 8px;
-            margin: 2px 0;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #fafafa;
-        }
-        .record-detail .detail-row.correct-detail {
-            background: #e8f5e9;
-        }
-        .record-detail .detail-row.wrong-detail {
-            background: #ffebee;
-        }
-        .record-filter {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-        .record-filter-btn {
-            padding: 7px 14px;
-            border-radius: 18px;
-            border: 1px solid #ccc;
-            background: #fff;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .record-filter-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
         .content {
             flex: 1;
             position: relative;
@@ -1275,101 +1195,168 @@
             color: var(--primary);
         }
 
+        /* ===== 全新名字遮罩样式 ===== */
         #name-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             z-index: 20000;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(6px);
+            animation: overlayFadeIn 0.6s ease;
         }
+        @keyframes overlayFadeIn {
+            0% { opacity: 0; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
         .name-box {
-            background: linear-gradient(145deg, #FFE4B5, #FFDAB9);
-            padding: 30px 25px;
-            border-radius: 60px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 60px 60px 40px 40px;
+            padding: 40px 30px 35px;
+            width: 88%;
+            max-width: 380px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 0 2px rgba(255,215,0,0.2), 0 0 0 6px rgba(255,215,0,0.1);
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 4px #FFB347, 0 0 0 8px rgba(255, 215, 0, 0.5);
-            width: 85%;
-            max-width: 320px;
-            border: 3px solid #8B4513;
             position: relative;
+            transition: transform 0.3s;
+        }
+        .name-box:hover {
+            transform: translateY(-4px);
+        }
+
+        .name-box .brand {
+            font-size: 48px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
         .name-box h2 {
-            color: #8B4513;
-            font-size: 28px;
-            margin: 0 0 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .lang-switch-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: #6D4C41;
             color: #FFD966;
-            border: 2px solid #FFD966;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin: 0 0 6px 0;
+            text-shadow: 0 2px 10px rgba(255,215,0,0.3);
+        }
+        .name-box .sub {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            font-weight: 300;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        .name-box .lang-switch-btn {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            background: rgba(255, 215, 0, 0.15);
+            color: #FFD966;
+            border: 1px solid #FFD966;
             border-radius: 30px;
-            padding: 4px 12px;
+            padding: 4px 14px;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.1s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .lang-switch-btn:active {
-            transform: scale(0.95);
+        .name-box .lang-switch-btn:active {
+            transform: scale(0.92);
+            background: rgba(255,215,0,0.3);
         }
+
         .name-box input {
             width: 100%;
-            padding: 12px 15px;
-            font-size: 18px;
-            border-radius: 50px;
-            border: 3px solid #8B4513;
-            background: #FFFEF7;
-            text-align: center;
-            font-weight: bold;
-            color: #4a2c00;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-        }
-        .name-box button {
-            background: #C41E3A;
-            color: #FFD966;
-            border: none;
-            padding: 12px 25px;
+            padding: 14px 18px;
             font-size: 20px;
-            font-weight: bold;
-            border-radius: 40px;
-            width: 80%;
-            box-shadow: 0 5px 0 #8B0000;
-            cursor: pointer;
-            transition: 0.05s linear;
-            margin-top: 8px;
+            font-weight: 600;
+            border-radius: 50px;
+            border: 2px solid rgba(255,215,0,0.3);
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            text-align: center;
+            letter-spacing: 1px;
+            text-transform: uppercase;    /* 强制显示大写 */
+            outline: none;
+            transition: 0.25s;
+            box-sizing: border-box;
+            margin-bottom: 12px;
         }
-        .name-box button:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #8B0000;
+        .name-box input::placeholder {
+            color: rgba(255,255,255,0.35);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            text-transform: none;
+        }
+        .name-box input:focus {
+            border-color: #FFD966;
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 0 20px rgba(255,215,0,0.15);
+        }
+        .name-box input:last-of-type {
+            margin-bottom: 20px;
+        }
+
+        .name-box .btn-start {
+            background: linear-gradient(135deg, #FFB347, #FF8C00);
+            color: #1a1a2e;
+            border: none;
+            padding: 16px 30px;
+            font-size: 22px;
+            font-weight: 800;
+            border-radius: 50px;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 8px 0 #b85e00, 0 6px 20px rgba(255,140,0,0.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .name-box .btn-start:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #b85e00, 0 6px 20px rgba(255,140,0,0.3);
+        }
+        .name-box .btn-start:hover {
+            filter: brightness(1.05);
+        }
+
+        .name-box .footnote {
+            margin-top: 16px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 0.5px;
+        }
+        .name-box .footnote span {
+            display: inline-block;
+            background: rgba(255,255,255,0.05);
+            padding: 2px 10px;
+            border-radius: 20px;
         }
     </style>
 </head>
 <body>
 
     <div id="app">
-        <!-- 名字输入遮罩（一开始显示） -->
+        <!-- ===== 新名字输入遮罩 ===== -->
         <div id="name-overlay">
             <div class="name-box">
                 <div class="lang-switch-btn" id="overlay-lang-btn">BM</div>
-                <h2>🐹 仓鼠学霸 <span>📖</span></h2>
+                <div class="brand">🐹</div>
+                <h2>仓鼠学霸</h2>
+                <div class="sub">✨ 开启你的历史冒险 ✨</div>
                 <input type="text" id="player-name-input" placeholder="输入你的名字" maxlength="20" autocomplete="off">
                 <input type="text" id="player-school-input" placeholder="输入你的学校（可选）" maxlength="30" autocomplete="off">
-                <button id="confirm-name-btn">开始冒险 🚀</button>
+                <button class="btn-start" id="confirm-name-btn">开始冒险 🚀</button>
+                <div class="footnote"><span>🇲🇾 所有字母自动转为大写</span></div>
             </div>
         </div>
 
@@ -1392,7 +1379,7 @@
             <span class="toast-text" id="toastText">mesej</span>
         </div>
 
-        <!-- 开发者后台 - 题库管理 + 成绩查看 -->
+        <!-- 开发者后台 - 仅保留题库管理 -->
         <div id="dev-panel">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <h3 style="display:flex; gap:5px; margin:0;">🛠 <span class="i18n" data-key="dev_title">Pengurusan</span></h3>
@@ -1400,10 +1387,7 @@
             </div>
             <div class="dev-tabs">
                 <button class="dev-tab-btn active" onclick="switchDevTab('quiz', this)">📝 <span class="i18n" data-key="dev_tab_quiz">题库管理</span></button>
-                <button class="dev-tab-btn" onclick="switchDevTab('records', this)">📊 <span class="i18n" data-key="dev_tab_records">成绩查看</span></button>
             </div>
-
-            <!-- 题库管理面板 -->
             <div id="dev-tab-quiz" class="dev-tab-content active">
                 <div class="dev-card">
                     <h4><span class="i18n" data-key="dev_flag">🇲🇾✨ Soalan Jalur Gemilang</span></h4>
@@ -1416,22 +1400,6 @@
                     <button class="btn-play" style="font-size:12px; padding:8px; background:#00796B;" onclick="addQuestion('emblem')">+ <span class="i18n" data-key="dev_add_emblem">Tambah soalan Jata Negara</span></button>
                 </div>
                 <button class="btn-play" style="background:#333; margin-bottom:50px;" onclick="saveQuizzes()">✅ <span class="i18n" data-key="dev_save">Simpan semua perubahan</span></button>
-            </div>
-
-            <!-- 成绩查看面板 -->
-            <div id="dev-tab-records" class="dev-tab-content">
-                <div class="dev-card">
-                    <h4>📊 <span id="records-title">成绩记录</span></h4>
-                    <div class="record-filter">
-                        <button class="record-filter-btn active" onclick="filterRecords('flag', this)">🇲🇾✨ 辉煌条纹 / Jalur Gemilang</button>
-                        <button class="record-filter-btn" onclick="filterRecords('emblem', this)">🛡️ 国徽 / Jata Negara</button>
-                    </div>
-                    <div id="records-list" style="max-height:400px; overflow-y:auto;"></div>
-                    <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-                        <button class="btn-play" style="font-size:12px; padding:8px; background:#e53935;" onclick="clearRecords()">🗑️ <span id="records-clear-btn">清除当前类型成绩</span></button>
-                        <button class="btn-play" style="font-size:12px; padding:8px; background:#1565C0;" onclick="exportRecords()">📥 <span id="records-export-btn">导出成绩</span></button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -1447,11 +1415,11 @@
             <div class="coin-pill">💰 <span id="coin-val">100</span></div>
         </header>
 
-        <!-- 全局音乐图标（所有页面可见） -->
+        <!-- 全局音乐图标 -->
         <div class="global-music" id="musicIcon">🔇</div>
 
         <main class="content">
-            <!-- 美化后的学习页面 - 马来西亚历史主题 -->
+            <!-- 学习页面 -->
             <section id="page-left" class="page">
                 <div class="page-left-header">
                     <h2>
@@ -1501,9 +1469,8 @@
                 </div>
             </section>
 
-            <!-- 家园页面 - 包含语言切换按钮 -->
+            <!-- 家园页面 -->
             <section id="page-mid" class="page active">
-                <!-- 语言切换按钮（只在家园页面显示） -->
                 <div class="home-lang-btn" id="homeLangBtn" onclick="toggleLanguage()">BM</div>
                 <div id="room-container" style="width:100%; height:100%; position:relative; z-index:10;"></div>
             </section>
@@ -1550,10 +1517,9 @@
 
     <script>
         let devTimer;
-        let currentLang = 'ms'; // 默认设为马来语
-        let currentRecordFilter = 'flag'; // 成绩查看当前筛选类型
+        let currentLang = 'ms';
 
-        // ========== 题库定义（中文和马来文）==========
+        // ========== 题库定义（不变）==========
         const questionBank = {
             flag: {
                 zh: [
@@ -1711,13 +1677,12 @@
             }
         };
 
-        // 当前使用的题库（根据语言切换）
         let currentQuizzes = {
             flag: questionBank.flag.ms,
             emblem: questionBank.emblem.ms
         };
 
-        // ========== 语言包 ==========
+        // ========== 语言包（删除了成绩相关，保持不变）==========
         const i18n = {
             zh: {
                 backpack_title: '仓鼠百宝袋',
@@ -1726,7 +1691,6 @@
                 backpack_empty_sub: '快去商店采购马来特色商品吧',
                 dev_title: '管理',
                 dev_tab_quiz: '题库管理',
-                dev_tab_records: '成绩查看',
                 dev_flag: '🇲🇾✨ 辉煌条纹题库',
                 dev_add_flag: '新增辉煌条纹题',
                 dev_emblem: '🛡️ 国徽题库',
@@ -1764,25 +1728,6 @@
                 bad_status_toast: '仓鼠状态不佳',
                 hungry_msg: '😢 仓鼠饿了… 快去学习赚金币买马来美食吧！',
                 name_empty_error: '请输入名字后再开始！',
-                records_title_flag: '🇲🇾✨ 辉煌条纹 · 成绩记录',
-                records_title_emblem: '🛡️ 国徽 · 成绩记录',
-                records_clear_btn: '清除当前类型成绩',
-                records_export_btn: '导出成绩',
-                records_no_data: '暂无成绩记录',
-                records_detail_title: '📋 答题详情：',
-                records_correct_first: '✓ 一次答对',
-                records_wrong_first: '✗ 首次答错，尝试',
-                records_attempts: '次',
-                records_time: '用时',
-                records_seconds: '秒',
-                records_total: '共',
-                records_questions: '题',
-                records_correct_count: '首次答对',
-                records_name: '姓名',
-                records_school: '学校',
-                records_time_label: '时间',
-                records_clear_confirm: '确定要清除所有辉煌条纹的成绩记录吗？',
-                records_clear_confirm_emblem: '确定要清除所有国徽的成绩记录吗？',
                 items: {
                     nasi_lemak: '椰浆饭',
                     laksa: '叻沙',
@@ -1817,7 +1762,6 @@
                 backpack_empty_sub: 'Beli dan menyimpan barang-barang unik Malaysia di sini',
                 dev_title: 'Pengurusan',
                 dev_tab_quiz: 'Pengurusan Soalan',
-                dev_tab_records: 'Rekod Pencapaian',
                 dev_flag: '🇲🇾✨ Soalan Jalur Gemilang',
                 dev_add_flag: 'Tambah soalan Jalur Gemilang',
                 dev_emblem: '🛡️ Soalan Jata Negara',
@@ -1855,25 +1799,6 @@
                 bad_status_toast: 'Keadaan hamster kurang baik',
                 hungry_msg: '😢 Hamster lapar… Cepat belajar dan dapat emas untuk beli makanan!',
                 name_empty_error: 'Sila masukkan nama anda terlebih dahulu!',
-                records_title_flag: '🇲🇾✨ Jalur Gemilang · Rekod Pencapaian',
-                records_title_emblem: '🛡️ Jata Negara · Rekod Pencapaian',
-                records_clear_btn: 'Padam rekod semasa',
-                records_export_btn: 'Eksport rekod',
-                records_no_data: 'Tiada rekod pencapaian',
-                records_detail_title: '📋 Butiran jawapan:',
-                records_correct_first: '✓ Betul pada percubaan pertama',
-                records_wrong_first: '✗ Salah pertama, cuba ',
-                records_attempts: ' kali',
-                records_time: 'Masa',
-                records_seconds: 'saat',
-                records_total: 'Jumlah',
-                records_questions: 'soalan',
-                records_correct_count: 'Betul pertama',
-                records_name: 'Nama',
-                records_school: 'Sekolah',
-                records_time_label: 'Masa',
-                records_clear_confirm: 'Pasti padam semua rekod Jalur Gemilang?',
-                records_clear_confirm_emblem: 'Pasti padam semua rekod Jata Negara?',
                 items: {
                     nasi_lemak: 'Nasi Lemak',
                     laksa: 'Laksa',
@@ -1903,7 +1828,7 @@
             }
         };
 
-        // 切换语言
+        // ---- 语言切换（不变） ----
         function toggleLanguage() {
             const newLang = currentLang === 'zh' ? 'ms' : 'zh';
             setLanguage(newLang);
@@ -1928,67 +1853,11 @@
             if (document.getElementById('quiz-screen').style.display === 'flex') {
                 renderQuizStep();
             }
-            // 更新成绩查看面板标题
-            updateRecordsTitle();
-            if (document.getElementById('dev-panel').style.display === 'block' &&
-                document.getElementById('dev-tab-records').classList.contains('active')) {
-                renderRecords();
-            }
+            // 更新遮罩文字
+            updateOverlayText();
         }
 
-        function updateRecordsTitle() {
-            const titleEl = document.getElementById('records-title');
-            if (titleEl) {
-                if (currentRecordFilter === 'flag') {
-                    titleEl.innerText = currentLang === 'zh' ? '🇲🇾✨ 辉煌条纹 · 成绩记录' :
-                        '🇲🇾✨ Jalur Gemilang · Rekod Pencapaian';
-                } else {
-                    titleEl.innerText = currentLang === 'zh' ? '🛡️ 国徽 · 成绩记录' : '🛡️ Jata Negara · Rekod Pencapaian';
-                }
-            }
-            const clearBtn = document.getElementById('records-clear-btn');
-            if (clearBtn) {
-                clearBtn.innerText = currentLang === 'zh' ? '清除当前类型成绩' : 'Padam rekod semasa';
-            }
-            const exportBtn = document.getElementById('records-export-btn');
-            if (exportBtn) {
-                exportBtn.innerText = currentLang === 'zh' ? '导出成绩' : 'Eksport rekod';
-            }
-        }
-
-        // ========== 成绩记录存储 ==========
-        function getRecordsStorageKey(type) {
-            return 'quiz_records_' + type;
-        }
-
-        function saveQuizRecord(type, record) {
-            const key = getRecordsStorageKey(type);
-            let records = [];
-            try {
-                const raw = localStorage.getItem(key);
-                if (raw) records = JSON.parse(raw);
-            } catch (e) {}
-            records.push(record);
-            // 最多保留200条记录
-            if (records.length > 200) records = records.slice(-200);
-            localStorage.setItem(key, JSON.stringify(records));
-        }
-
-        function getQuizRecords(type) {
-            const key = getRecordsStorageKey(type);
-            try {
-                const raw = localStorage.getItem(key);
-                if (raw) return JSON.parse(raw);
-            } catch (e) {}
-            return [];
-        }
-
-        function clearQuizRecords(type) {
-            const key = getRecordsStorageKey(type);
-            localStorage.removeItem(key);
-        }
-
-        // 商品数据
+        // ---- 所有游戏逻辑（原封不动）----
         const shopItems = {
             food: [
                 { id: 'nasi_lemak', icon: '🍚', price: 30, type: 'full', val: 30, happyVal: 3, xp: 8 },
@@ -2016,7 +1885,6 @@
             ]
         };
 
-        // 渲染商店
         function renderShop() {
             for (let cat in shopItems) {
                 const container = document.getElementById(`shop-${cat}`);
@@ -2272,7 +2140,6 @@
             quizAnswered: false
         };
 
-        // 对话消息库（中/马双语）
         const dialogueMessages = {
             zh: [
                 { text: "咕咕～ 想吃椰浆饭！", icon: "🍚", condition: (s) => s.full < 30 },
@@ -2347,16 +2214,13 @@
             setTimeout(() => toast.classList.remove('show'), duration);
         }
 
-        // 音效相关
         let audioContext = null;
-
         function initAudioContext() {
             if (!audioContext) {
                 audioContext = new(window.AudioContext || window.webkitAudioContext)();
             }
             return audioContext;
         }
-
         function playCorrectSound() {
             try {
                 const ctx = initAudioContext();
@@ -2374,7 +2238,6 @@
                 osc.stop(now + 0.2);
             } catch (e) { console.warn('Audio not supported'); }
         }
-
         function playWrongSound() {
             try {
                 const ctx = initAudioContext();
@@ -2392,7 +2255,6 @@
                 osc.stop(now + 0.15);
             } catch (e) { console.warn('Audio not supported'); }
         }
-
         function playCashSound() {
             try {
                 const ctx = initAudioContext();
@@ -2420,7 +2282,6 @@
                 osc2.stop(now + 0.1);
             } catch (e) {}
         }
-
         function playHooraySound() {
             try {
                 const ctx = initAudioContext();
@@ -2441,7 +2302,6 @@
                 });
             } catch (e) {}
         }
-
         function playQuestCompleteSound() {
             try {
                 const ctx = initAudioContext();
@@ -2469,7 +2329,6 @@
                 osc2.stop(now + 0.15);
             } catch (e) {}
         }
-
         function playPlaceFurnitureSound() {
             try {
                 const ctx = initAudioContext();
@@ -2656,7 +2515,6 @@
             }
         }
 
-        // 答题完成奖励 —— 并记录成绩
         function finishQuizReward() {
             let baseXP = 20;
             let perfectCount = state.quizPerfect.filter(v => v).length;
@@ -2685,38 +2543,6 @@
             showToast(detailMsg, '✅', 5000);
             showFloatingText('✅ ' + (currentLang === 'zh' ? '答题完成' : 'Selesai'), '#4CAF50', document.getElementById(
                 'quiz-ham-img'));
-
-            // ========== 保存成绩记录 ==========
-            const endTime = new Date();
-            const startTime = state.quizStartTime || endTime;
-            const durationSeconds = Math.round((endTime - startTime) / 1000);
-            const quizType = state.quizType || 'flag';
-            const totalQuestions = state.activeQuiz.length;
-            const correctCount = state.quizPerfect.filter(v => v).length;
-
-            // 构建每题详情
-            const details = state.activeQuiz.map((q, i) => ({
-                question: q.q,
-                correctFirst: state.quizPerfect[i],
-                attempts: state.quizAttempts[i] || 1
-            }));
-
-            const record = {
-                name: state.playerName || (currentLang === 'zh' ? '未知' : 'Tidak diketahui'),
-                school: state.playerSchool || '',
-                startTime: startTime.toISOString(),
-                endTime: endTime.toISOString(),
-                duration: durationSeconds,
-                totalQuestions: totalQuestions,
-                correctCount: correctCount,
-                details: details,
-                lang: currentLang
-            };
-
-            saveQuizRecord(quizType, record);
-            // 同时保存玩家姓名和学校到localStorage
-            if (state.playerName) localStorage.setItem('lastPlayerName', state.playerName);
-            if (state.playerSchool) localStorage.setItem('lastPlayerSchool', state.playerSchool);
         }
 
         function makeDraggable(el, onDragEnd) {
@@ -2774,32 +2600,16 @@
         }
 
         function startDevTimer() { devTimer = setTimeout(() => toggleDev(true), 2000); }
-
         function clearDevTimer() { clearTimeout(devTimer); }
 
         function toggleDev(show) {
             document.getElementById('dev-panel').style.display = show ? 'block' : 'none';
             if (show) {
                 renderEditor();
-                if (document.getElementById('dev-tab-records').classList.contains('active')) {
-                    renderRecords();
-                }
-                updateRecordsTitle();
             }
         }
 
-        function switchDevTab(tab, btn) {
-            document.querySelectorAll('.dev-tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.dev-tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('dev-tab-' + tab).classList.add('active');
-            btn.classList.add('active');
-            if (tab === 'quiz') {
-                renderEditor();
-            } else if (tab === 'records') {
-                updateRecordsTitle();
-                renderRecords();
-            }
-        }
+        function switchDevTab(tab, btn) { /* 仅保留一个标签，无需操作 */ }
 
         function renderEditor() {
             const flagList = document.getElementById('flag-editor-list');
@@ -2843,129 +2653,6 @@
             toggleDev(false);
         }
 
-        // ========== 成绩查看相关函数 ==========
-        function filterRecords(type, btn) {
-            currentRecordFilter = type;
-            document.querySelectorAll('.record-filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            updateRecordsTitle();
-            renderRecords();
-        }
-
-        function renderRecords() {
-            const listEl = document.getElementById('records-list');
-            const records = getQuizRecords(currentRecordFilter);
-            if (records.length === 0) {
-                listEl.innerHTML =
-                    `<div style="text-align:center; padding:30px; color:#888; font-size:15px;">📭 ${i18n[currentLang].records_no_data}</div>`;
-                return;
-            }
-            // 倒序显示（最新的在前）
-            const reversed = [...records].reverse();
-            listEl.innerHTML = reversed.map((r, displayIdx) => {
-                const realIdx = records.length - 1 - displayIdx;
-                const dateStr = new Date(r.startTime).toLocaleString();
-                const durationStr = r.duration + ' ' + (currentLang === 'zh' ? '秒' : 'saat');
-                const correctStr = r.correctCount + '/' + r.totalQuestions;
-                const schoolStr = r.school || (currentLang === 'zh' ? '未填写' : 'Tidak diisi');
-                const nameStr = r.name || (currentLang === 'zh' ? '未知' : 'Tidak diketahui');
-                const recordClass = currentRecordFilter === 'emblem' ? 'record-card emblem-record' : 'record-card';
-                return `
-                <div class="${recordClass}" onclick="toggleRecordDetail(${realIdx})" id="record-card-${realIdx}">
-                    <div class="record-summary">
-                        <strong>${nameStr}</strong>
-                        <span>🏫 ${schoolStr}</span>
-                        <span>📅 ${dateStr}</span>
-                        <span>✅ ${correctStr}</span>
-                        <span>⏱ ${durationStr}</span>
-                    </div>
-                    <div class="record-detail" id="record-detail-${realIdx}">
-                        ${buildDetailHTML(r)}
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-
-        function buildDetailHTML(record) {
-            if (!record.details || record.details.length === 0) return '';
-            const titleLabel = currentLang === 'zh' ? '📋 答题详情：' : '📋 Butiran jawapan:';
-            let html = `<strong>${titleLabel}</strong>`;
-            record.details.forEach((d, i) => {
-                const rowClass = d.correctFirst ? 'correct-detail' : 'wrong-detail';
-                let statusText;
-                if (d.correctFirst) {
-                    statusText = currentLang === 'zh' ? '✓ 一次答对' : '✓ Betul pertama';
-                } else {
-                    const attemptsText = currentLang === 'zh' ? '次' : 'kali';
-                    statusText = (currentLang === 'zh' ? '✗ 首次答错，尝试 ' : '✗ Salah pertama, cuba ') + d.attempts +
-                        ' ' + attemptsText;
-                }
-                html +=
-                    `<div class="detail-row ${rowClass}"><span>${i+1}.</span><span>${d.question.substring(0,40)}...</span><span>${statusText}</span></div>`;
-            });
-            return html;
-        }
-
-        function toggleRecordDetail(idx) {
-            const detailEl = document.getElementById('record-detail-' + idx);
-            if (detailEl) {
-                detailEl.classList.toggle('open');
-            }
-        }
-
-        function clearRecords() {
-            const confirmMsg = currentRecordFilter === 'flag' ?
-                (currentLang === 'zh' ? '确定要清除所有辉煌条纹的成绩记录吗？' : 'Pasti padam semua rekod Jalur Gemilang?') :
-                (currentLang === 'zh' ? '确定要清除所有国徽的成绩记录吗？' : 'Pasti padam semua rekod Jata Negara?');
-            if (confirm(confirmMsg)) {
-                clearQuizRecords(currentRecordFilter);
-                renderRecords();
-                showToast(currentLang === 'zh' ? '成绩已清除' : 'Rekod dipadam', '🗑️', 2000);
-            }
-        }
-
-        function exportRecords() {
-            const records = getQuizRecords(currentRecordFilter);
-            if (records.length === 0) {
-                showToast(i18n[currentLang].records_no_data, '📭', 2000);
-                return;
-            }
-            const typeLabel = currentRecordFilter === 'flag' ?
-                (currentLang === 'zh' ? '辉煌条纹' : 'Jalur Gemilang') :
-                (currentLang === 'zh' ? '国徽' : 'Jata Negara');
-            let csvContent = '\uFEFF';
-            csvContent += (currentLang === 'zh' ?
-                '姓名,学校,开始时间,结束时间,用时(秒),总题数,首次答对题数,每题详情\n' :
-                'Nama,Sekolah,Mula,Tamat,Masa(saat),Jumlah Soalan,Betul Pertama,Butiran\n');
-            records.forEach(r => {
-                const name = r.name || '';
-                const school = r.school || '';
-                const startTime = r.startTime || '';
-                const endTime = r.endTime || '';
-                const duration = r.duration || 0;
-                const total = r.totalQuestions || 0;
-                const correct = r.correctCount || 0;
-                let detailsStr = '';
-                if (r.details && r.details.length > 0) {
-                    detailsStr = r.details.map((d, i) => {
-                        const status = d.correctFirst ? '✓' : '✗';
-                        return `Q${i+1}:${status}(${d.attempts})`;
-                    }).join('; ');
-                }
-                csvContent +=
-                    `"${name}","${school}","${startTime}","${endTime}",${duration},${total},${correct},"${detailsStr}"\n`;
-            });
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `quiz_records_${currentRecordFilter}_${new Date().toISOString().slice(0,10)}.csv`;
-            link.click();
-            URL.revokeObjectURL(url);
-            showToast(currentLang === 'zh' ? '导出成功！' : 'Eksport berjaya!', '📥', 2000);
-        }
-
         function switchShop(cat, btn) {
             document.querySelectorAll('.shop-grid').forEach(g => g.classList.remove('active'));
             document.getElementById('shop-' + cat).classList.add('active');
@@ -2980,7 +2667,6 @@
             btn.classList.add('active');
         }
 
-        // ⭐ 修改后的 startQuiz 函数：题目顺序和选项顺序全部随机，并记录开始时间
         function startQuiz(type) {
             const originalQuiz = state.quizzes[type];
             const shuffledQuiz = [...originalQuiz];
@@ -2988,7 +2674,6 @@
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffledQuiz[i], shuffledQuiz[j]] = [shuffledQuiz[j], shuffledQuiz[i]];
             }
-
             shuffledQuiz.forEach(question => {
                 const originalOpts = [...question.opts];
                 const ansIndex = question.ans;
@@ -3000,7 +2685,6 @@
                 question.opts = indices.map(i => originalOpts[i]);
                 question.ans = indices.findIndex(i => i === ansIndex);
             });
-
             state.activeQuiz = shuffledQuiz;
             state.quizIdx = 0;
             state.quizPerfect = new Array(shuffledQuiz.length).fill(true);
@@ -3035,7 +2719,6 @@
                         document.getElementById('buddy-msg').innerText = q.succ;
                         showFloatingText('✅ ' + (currentLang === 'zh' ? '答对了！' : 'Betul!'), '#4CAF50', btn);
                         playCorrectSound();
-                        // 禁用所有选项按钮
                         box.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
                         setTimeout(() => {
                             state.quizIdx++;
@@ -3062,7 +2745,7 @@
             document.getElementById('quiz-screen').style.display = 'none';
         }
 
-        // 名字输入遮罩逻辑
+        // ===== 名字遮罩相关（重写） =====
         const overlay = document.getElementById('name-overlay');
         const nameInput = document.getElementById('player-name-input');
         const schoolInput = document.getElementById('player-school-input');
@@ -3070,31 +2753,39 @@
         const overlayLangBtn = document.getElementById('overlay-lang-btn');
         let gameStarted = false;
 
-        const toastMsg = document.getElementById('toastMessage');
-        if (toastMsg) {
-            toastMsg.style.zIndex = '21000';
-        }
+        // 强制输入框内容转为大写（实时）
+        [nameInput, schoolInput].forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+        });
 
         function updateOverlayText() {
             if (currentLang === 'zh') {
-                document.querySelector('#name-overlay h2').innerHTML = '🐹 仓鼠学霸 <span>📖</span>';
+                document.querySelector('#name-overlay .brand').innerText = '🐹';
+                document.querySelector('#name-overlay h2').innerText = '仓鼠学霸';
+                document.querySelector('#name-overlay .sub').innerText = '✨ 开启你的历史冒险 ✨';
                 nameInput.placeholder = '输入你的名字';
                 schoolInput.placeholder = '输入你的学校（可选）';
                 confirmBtn.innerText = '开始冒险 🚀';
                 overlayLangBtn.innerText = 'BM';
+                document.querySelector('#name-overlay .footnote span').innerHTML = '🇲🇾 所有字母自动转为大写';
             } else {
-                document.querySelector('#name-overlay h2').innerHTML = '🐹 Hamster Pro <span>📖</span>';
+                document.querySelector('#name-overlay .brand').innerText = '🐹';
+                document.querySelector('#name-overlay h2').innerText = 'Hamster Pro';
+                document.querySelector('#name-overlay .sub').innerText = '✨ Mulakan pengembaraan sejarah ✨';
                 nameInput.placeholder = 'Masukkan nama anda';
                 schoolInput.placeholder = 'Masukkan sekolah anda (pilihan)';
                 confirmBtn.innerText = 'Mula 🚀';
                 overlayLangBtn.innerText = '中';
+                document.querySelector('#name-overlay .footnote span').innerHTML = '🇲🇾 Semua huruf automatik huruf besar';
             }
         }
 
         function toggleOverlayLanguage() {
             const newLang = currentLang === 'zh' ? 'ms' : 'zh';
             setLanguage(newLang);
-            updateOverlayText();
+            // setLanguage 内部会调用 updateOverlayText
         }
         overlayLangBtn.onclick = toggleOverlayLanguage;
 
@@ -3144,51 +2835,55 @@
         function startGameWithName(playerName) {
             if (gameStarted) return;
             gameStarted = true;
-            state.playerName = playerName;
-            state.playerSchool = schoolInput ? schoolInput.value.trim() : '';
-            if (!loadGameFromLocal(playerName)) {
-                console.log(`新玩家 ${playerName}，创建新存档`);
+            // 强制转为大写存储
+            const upperName = playerName.toUpperCase();
+            state.playerName = upperName;
+            state.playerSchool = schoolInput ? schoolInput.value.trim().toUpperCase() : '';
+            if (!loadGameFromLocal(upperName)) {
+                console.log(`新玩家 ${upperName}，创建新存档`);
             }
             updateUI();
             renderRoom();
             renderShop();
             init();
             overlay.style.display = 'none';
+
+            // 包装核心函数以自动保存
             const originalAddXP_ = addXP;
             window.addXP = function(amount) {
                 originalAddXP_(amount);
-                saveGameToLocal(playerName);
+                saveGameToLocal(upperName);
             };
             const originalBuy_ = buy;
             window.buy = function(icon, id, price, type, val, happyVal, xpGain) {
                 originalBuy_(icon, id, price, type, val, happyVal, xpGain);
-                saveGameToLocal(playerName);
+                saveGameToLocal(upperName);
             };
             const originalUseItem_ = useItem;
             window.useItem = function(id) {
                 originalUseItem_(id);
-                saveGameToLocal(playerName);
+                saveGameToLocal(upperName);
             };
             const originalFinishQuizReward_ = finishQuizReward;
             window.finishQuizReward = function() {
                 originalFinishQuizReward_();
-                saveGameToLocal(playerName);
+                saveGameToLocal(upperName);
             };
             const originalUpdateUI_ = updateUI;
             window.updateUI = function() {
                 originalUpdateUI_();
-                saveGameToLocal(playerName);
+                saveGameToLocal(upperName);
             };
             const originalSetLanguage_ = setLanguage;
             window.setLanguage = function(lang) {
                 originalSetLanguage_(lang);
-                saveGameToLocal(playerName);
+                saveGameToLocal(upperName);
             };
-            saveGameToLocal(playerName);
+            saveGameToLocal(upperName);
         }
 
         confirmBtn.onclick = () => {
-            let name = nameInput.value.trim();
+            let name = nameInput.value.trim().toUpperCase();
             if (name === "") {
                 showToast(i18n[currentLang].name_empty_error, '⚠️', 2000);
                 return;
@@ -3197,7 +2892,7 @@
         };
         nameInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                let name = nameInput.value.trim();
+                let name = nameInput.value.trim().toUpperCase();
                 if (name === "") {
                     showToast(i18n[currentLang].name_empty_error, '⚠️', 2000);
                     return;
@@ -3207,7 +2902,7 @@
         });
         schoolInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                let name = nameInput.value.trim();
+                let name = nameInput.value.trim().toUpperCase();
                 if (name === "") {
                     showToast(i18n[currentLang].name_empty_error, '⚠️', 2000);
                     return;
@@ -3216,6 +2911,7 @@
             }
         });
 
+        // 自动读取上次玩家，跳过遮罩
         const lastPlayer = localStorage.getItem('lastPlayerName');
         if (lastPlayer) {
             const lastSchool = localStorage.getItem('lastPlayerSchool') || '';
