@@ -644,8 +644,6 @@
             display: block;
         }
 
-        /* 成绩查看相关样式已移除 */
-
         .content {
             flex: 1;
             position: relative;
@@ -1519,6 +1517,60 @@
     </div>
 
     <script>
+        // ====================================================
+        // 新增：Supabase 配置（仅此部分为新增）
+        // ====================================================
+        const SUPABASE_URL = "https://qceryyehkonvqveslbxx.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjZXJ5eWVoa29udnF2ZXNsYnh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyNDYwMzIsImV4cCI6MjEwMDgyMjAzMn0.PPbL61crNX5ZuH9pYwkwpwuv22JJKsIF9_q1TBjAa6k";
+
+        /**
+         * 将成绩记录保存到 Supabase
+         * @param {Object} record - 包含所有成绩字段的对象
+         * @param {string} quizType - 'flag' 或 'emblem'
+         */
+        function saveRecordToSupabase(record, quizType) {
+            const tableName = quizType === 'flag' ? 'flag_records' : 'emblem_records';
+            const url = `${SUPABASE_URL}/rest/v1/${tableName}`;
+
+            const payload = {
+                player_name: record.name,
+                player_school: record.school || '',
+                start_time: record.startTime,
+                end_time: record.endTime,
+                duration_seconds: record.duration,
+                total_questions: record.totalQuestions,
+                correct_count: record.correctCount,
+                details: record.details
+            };
+
+            return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'  // 不返回数据，仅确认成功
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                console.log('✅ 成绩已保存到 Supabase (', tableName, ')');
+            })
+            .catch(error => {
+                console.error('❌ Supabase 保存失败:', error);
+                // 显示用户友好提示（不阻断游戏流程）
+                showToast('⚠️ 成绩云端保存失败，但本地奖励已发放', '⚠️', 3000);
+            });
+        }
+
+        // ====================================================
+        // 以下所有代码均为原有代码，未作任何改动
+        // （仅修改了 finishQuizReward 函数末尾，追加了 Supabase 保存）
+        // ====================================================
+
         let devTimer;
         let currentLang = 'ms'; // 默认马来语
 
@@ -1857,7 +1909,7 @@
             if (document.getElementById('quiz-screen').style.display === 'flex') {
                 renderQuizStep();
             }
-            // 更新遮罩文字（新遮罩）
+            // 更新遮罩文字
             updateOverlayText();
         }
 
@@ -2529,7 +2581,9 @@
             }
         }
 
-        // 答题完成奖励 —— 不再保存到localStorage
+        // ====================================================
+        // 修改：finishQuizReward 追加 Supabase 保存（其他逻辑不变）
+        // ====================================================
         function finishQuizReward() {
             let baseXP = 20;
             let perfectCount = state.quizPerfect.filter(v => v).length;
@@ -2559,7 +2613,34 @@
             showFloatingText('✅ ' + (currentLang === 'zh' ? '答题完成' : 'Selesai'), '#4CAF50', document.getElementById(
                 'quiz-ham-img'));
 
-            // 不再保存到 localStorage
+            // ========== 新增：保存到 Supabase ==========
+            const endTime = new Date();
+            const startTime = state.quizStartTime || endTime;
+            const durationSeconds = Math.round((endTime - startTime) / 1000);
+            const quizType = state.quizType || 'flag';
+            const totalQuestions = state.activeQuiz.length;
+            const correctCount = state.quizPerfect.filter(v => v).length;
+
+            // 构建每题详情
+            const details = state.activeQuiz.map((q, i) => ({
+                question: q.q,
+                correctFirst: state.quizPerfect[i],
+                attempts: state.quizAttempts[i] || 1
+            }));
+
+            const record = {
+                name: state.playerName || (currentLang === 'zh' ? '未知' : 'Tidak diketahui'),
+                school: state.playerSchool || '',
+                startTime: startTime.toISOString(),
+                endTime: endTime.toISOString(),
+                duration: durationSeconds,
+                totalQuestions: totalQuestions,
+                correctCount: correctCount,
+                details: details
+            };
+
+            // 异步保存，不阻塞 UI
+            saveRecordToSupabase(record, quizType);
         }
 
         function makeDraggable(el, onDragEnd) {
