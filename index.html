@@ -1238,10 +1238,10 @@
         }
 
         .name-box .deco {
-            font-size: 36px;
+            font-size: 50px;
             margin-bottom: 2px;
-            letter-spacing: 6px;
             filter: drop-shadow(0 2px 8px rgba(255,215,0,0.3));
+            line-height: 1.2;
         }
         .name-box h2 {
             color: #FFD966;
@@ -1340,20 +1340,7 @@
             filter: brightness(1.05);
         }
 
-        .name-box .footnote {
-            margin-top: 14px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 1px;
-        }
-        .name-box .footnote span {
-            display: inline-block;
-            background: rgba(0,0,0,0.25);
-            padding: 3px 14px;
-            border-radius: 30px;
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+        /* footnote 已移除 */
     </style>
 </head>
 <body>
@@ -1363,13 +1350,13 @@
         <div id="name-overlay">
             <div class="name-box">
                 <div class="lang-switch-btn" id="overlay-lang-btn">BM</div>
-                <div class="deco">🪁 🏮 🌙</div>
+                <div class="deco">🐹</div>
                 <h2>仓鼠学霸</h2>
                 <div class="sub">✨ 开启你的历史冒险 ✨</div>
                 <input type="text" id="player-name-input" placeholder="输入你的名字" maxlength="20" autocomplete="off">
                 <input type="text" id="player-school-input" placeholder="输入你的学校（可选）" maxlength="30" autocomplete="off">
                 <button class="btn-start" id="confirm-name-btn">开始冒险 🚀</button>
-                <div class="footnote"><span>🇲🇾 所有字母自动转为大写</span></div>
+                <!-- footnote 已移除 -->
             </div>
         </div>
 
@@ -2775,23 +2762,23 @@
 
         function updateOverlayText() {
             if (currentLang === 'zh') {
-                document.querySelector('#name-overlay .deco').innerText = '🪁 🏮 🌙';
+                document.querySelector('#name-overlay .deco').innerText = '🐹';
                 document.querySelector('#name-overlay h2').innerText = '仓鼠学霸';
                 document.querySelector('#name-overlay .sub').innerText = '✨ 开启你的历史冒险 ✨';
                 nameInput.placeholder = '输入你的名字';
                 schoolInput.placeholder = '输入你的学校（可选）';
                 confirmBtn.innerText = '开始冒险 🚀';
                 overlayLangBtn.innerText = 'BM';
-                document.querySelector('#name-overlay .footnote span').innerHTML = '🇲🇾 所有字母自动转为大写';
+                // footnote 已移除，无需更新
             } else {
-                document.querySelector('#name-overlay .deco').innerText = '🪁 🏮 🌙';
+                document.querySelector('#name-overlay .deco').innerText = '🐹';
                 document.querySelector('#name-overlay h2').innerText = 'Hamster Pro';
                 document.querySelector('#name-overlay .sub').innerText = '✨ Mulakan pengembaraan sejarah ✨';
                 nameInput.placeholder = 'Masukkan nama anda';
                 schoolInput.placeholder = 'Masukkan sekolah anda (pilihan)';
                 confirmBtn.innerText = 'Mula 🚀';
                 overlayLangBtn.innerText = '中';
-                document.querySelector('#name-overlay .footnote span').innerHTML = '🇲🇾 Semua huruf automatik huruf besar';
+                // footnote 已移除
             }
         }
 
